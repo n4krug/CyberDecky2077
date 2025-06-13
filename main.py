@@ -14,13 +14,15 @@ class Plugin:
     async def long_running(self):
         await asyncio.sleep(15)
         # Passing through a bunch of random data, just as an example
+        await decky.emit("timer_event", "Hello from the backend!", True, 2)
+        
+
+    async def test1(self):
         proc = await asyncio.create_subprocess_shell(
                         "backend/NexusMods.App/NexusMods.App list-games", 
                         stdout=asyncio.subprocess.PIPE, 
                         stderr=asyncio.subprocess.PIPE
                     )
-        # await decky.emit("timer_event", "Hello from the backend!", True, 2)
-        
         stdout, stderr = await proc.communicate()
         
         if stdout:
@@ -48,6 +50,9 @@ class Plugin:
 
     async def start_timer(self):
         self.loop.create_task(self.long_running())
+
+    async def test_button(self):
+        self.test1()
 
     # Migrations that should be performed before entering `_main()`.
     async def _migration(self):

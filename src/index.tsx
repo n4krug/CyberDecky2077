@@ -3,7 +3,8 @@ import {
   PanelSection,
   PanelSectionRow,
   Navigation,
-  staticClasses
+  staticClasses,
+  TextField
 } from "@decky/ui";
 import {
   addEventListener,
@@ -27,6 +28,7 @@ const add = callable<[first: number, second: number], number>("add");
 // This function calls the python function "start_timer", which takes in no arguments and returns nothing.
 // It starts a (python) timer which eventually emits the event 'timer_event'
 const startTimer = callable<[], void>("start_timer");
+const testButton = callable<[], void>("test_button");
 
 function Content() {
   const [result, setResult] = useState<number | undefined>();
@@ -35,6 +37,18 @@ function Content() {
     const result = await add(Math.random(), Math.random());
     setResult(result);
   };
+
+  const [out, setOut] = useState<string | undefined>();
+
+  const outListener = addEventListener<[type: string, content: string, errCode?: number]>("dev_out",(type, content, errCode) => {
+    if (type=="stderr") {
+      console.error(content, errCode)
+    } else {
+      console.log(content)
+    }
+
+    setOut(content)
+  })
 
   return (
     <PanelSection title="Panel Section">
@@ -53,6 +67,20 @@ function Content() {
         >
           {"Start Python timer"}
         </ButtonItem>
+      </PanelSectionRow>
+
+      <PanelSectionRow>
+        <ButtonItem
+          layout="below"
+          onClick={() => testButton()}
+        >
+          {"Test Button"}
+        </ButtonItem>
+      </PanelSectionRow>
+      <PanelSectionRow>
+        <TextField>
+          {out}
+        </TextField>
       </PanelSectionRow>
 
       {/* <PanelSectionRow>
