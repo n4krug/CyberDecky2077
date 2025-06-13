@@ -17,7 +17,7 @@ class Plugin:
         await decky.emit("timer_event", "Hello from the backend!", True, 2)
         
 
-    async def test1(self):
+    async def run_cmd(self, cmd):
         proc = await asyncio.create_subprocess_shell(
                         "backend/NexusMods.App/NexusMods.App list-games", 
                         stdout=asyncio.subprocess.PIPE, 
@@ -26,9 +26,12 @@ class Plugin:
         stdout, stderr = await proc.communicate()
         
         if stdout:
-            await decky.emit("timer_event", f'{stdout.decode()}', "[OUT]", 2)
+            await decky.emit("dev_out", "stdout", f'{stdout.decode()}')
         if stderr:
-            await decky.emit("timer_event", f'{stderr.decode()}', "[ERR]", 2)
+            await decky.emit("dev_out", "stderr", f'{stderr.decode()}', 500)
+
+    async def test1(self):
+        self.run_cmd("./backend/NexusMods.App/NexusMods.App list-games")
 
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
@@ -50,6 +53,9 @@ class Plugin:
 
     async def start_timer(self):
         self.loop.create_task(self.long_running())
+
+    async def ls_button(self):
+        self.run_cmd("ls .")
 
     async def test_button(self):
         self.test1()

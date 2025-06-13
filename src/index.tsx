@@ -29,6 +29,7 @@ const add = callable<[first: number, second: number], number>("add");
 // It starts a (python) timer which eventually emits the event 'timer_event'
 const startTimer = callable<[], void>("start_timer");
 const testButton = callable<[], void>("test_button");
+const lsButton = callable<[], void>("ls_button");
 
 function Content() {
   const [result, setResult] = useState<number | undefined>();
@@ -69,6 +70,14 @@ function Content() {
         </ButtonItem>
       </PanelSectionRow>
 
+      <PanelSectionRow>
+        <ButtonItem
+          layout="below"
+          onClick={() => lsButton()}
+        >
+          {"ls"}
+        </ButtonItem>
+      </PanelSectionRow>
       <PanelSectionRow>
         <ButtonItem
           layout="below"
