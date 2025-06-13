@@ -14,11 +14,24 @@ class Plugin:
     async def long_running(self):
         await asyncio.sleep(15)
         # Passing through a bunch of random data, just as an example
-        await decky.emit("timer_event", "Hello from the backend!", True, 2)
+        proc = await asyncio.create_subprocess_shell(
+                        "backend/NexusMods.App/NexusMods.App list-games", 
+                        stdout=asyncio.subprocess.PIPE, 
+                        stderr=asyncio.subprocess.PIPE
+                    )
+        # await decky.emit("timer_event", "Hello from the backend!", True, 2)
+        
+        stdout, stderr = await proc.communicate()
+        
+        if stdout:
+            await decky.emit("timer_event", f'{stdout.decode()}', "[OUT]", 2)
+        if stderr:
+            await decky.emit("timer_event", f'{stderr.decode()}', "[ERR]", 2)
 
     # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
     async def _main(self):
         self.loop = asyncio.get_event_loop()
+        await asyncio.create_subprocess_exec("backend/NexusMods.App/NexusMods.App")
         decky.logger.info("Hello World!")
 
     # Function called first during the unload process, utilize this to handle your plugin being stopped, but not
